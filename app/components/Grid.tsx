@@ -5,7 +5,7 @@ export function Grid({
   className,
   flow = 'row',
   gap = 'default',
-  items = 4,
+  items = 3,
   layout = 'default',
   ...props
 }: {
@@ -14,7 +14,7 @@ export function Grid({
   flow?: 'row' | 'col';
   gap?: 'default' | 'blog';
   items?: number;
-  layout?: 'default' | 'products' | 'auto' | 'blog';
+  layout?: 'default' | 'products' | 'auto' | 'blog' | 'none';
   [key: string]: any;
 }) {
   const layouts = {
@@ -26,6 +26,7 @@ export function Grid({
     }`,
     auto: 'auto-cols-auto',
     blog: 'grid-cols-1 md:grid-cols-2',
+    none: '',
   };
 
   const gaps = {

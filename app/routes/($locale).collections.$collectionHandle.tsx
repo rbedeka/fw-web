@@ -29,14 +29,14 @@ import {routeHeaders} from '~/data/cache';
 import {seoPayload} from '~/lib/seo.server';
 import type {SortParam} from '~/components/SortFilter';
 import {FILTER_URL_PREFIX} from '~/components/SortFilter';
-import {getImageLoadingPriority} from '~/lib/const';
+import {getImageLoadingPriority, PAGINATION_SIZE} from '~/lib/const';
 import {parseAsCurrency} from '~/lib/utils';
 
 export const headers = routeHeaders;
 
 export async function loader({params, request, context}: LoaderFunctionArgs) {
   const paginationVariables = getPaginationVariables(request, {
-    pageBy: 8,
+    pageBy: PAGINATION_SIZE,
   });
   const {collectionHandle} = params;
   const locale = context.storefront.i18n;
@@ -79,6 +79,7 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
   if (!collection) {
     throw new Response('collection', {status: 404});
   }
+  // Readon
 
   const seo = seoPayload.collection({collection, url: request.url});
 
@@ -149,9 +150,9 @@ export default function Collection() {
   const {ref, inView} = useInView();
 
   return (
-    <>
-      <PageHeader heading={collection.title}>
-        {collection?.description && (
+    <div className={'collection trending_collection text-white'}>
+      {/* <PageHeader className="text-red" header={collection.title}>
+        {collection?.description || "HELLO WORLD" && (
           <div className="flex items-baseline justify-between w-full">
             <div>
               <Text format width="narrow" as="p" className="inline-block">
@@ -160,7 +161,7 @@ export default function Collection() {
             </div>
           </div>
         )}
-      </PageHeader>
+      </PageHeader> */}
       <Section>
         <SortFilter
           filters={collection.products.filters as Filter[]}
@@ -205,7 +206,7 @@ export default function Collection() {
           </Pagination>
         </SortFilter>
       </Section>
-    </>
+    </div>
   );
 }
 
@@ -235,7 +236,7 @@ function ProductsLoadedOnScroll({
   }, [inView, navigate, state, nextPageUrl, hasNextPage]);
 
   return (
-    <Grid layout="products" data-test="product-grid">
+    <Grid layout="none" className="products-grid" data-test="product-grid">
       {nodes.map((product: any, i: number) => (
         <ProductCard
           key={product.id}

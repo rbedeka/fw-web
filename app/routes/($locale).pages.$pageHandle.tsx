@@ -28,15 +28,25 @@ export async function loader({request, params, context}: LoaderFunctionArgs) {
   return json({page, seo});
 }
 
+/*
+
+classes are added but were not applied on the project
+may be due to tailwind configuration etc
+
+*/
+
 export default function Page() {
   const {page} = useLoaderData<typeof loader>();
 
   return (
     <>
-      <PageHeader heading={page.title}>
+      <PageHeader
+        heading={page.title}
+        className="page flex justify-center items-center"
+      >
         <div
           dangerouslySetInnerHTML={{__html: page.body}}
-          className="prose dark:prose-invert"
+          className="prose dark:prose-invert body"
         />
       </PageHeader>
     </>

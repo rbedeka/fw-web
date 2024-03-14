@@ -32,6 +32,17 @@ import styles from './styles/app.css';
 import {DEFAULT_LOCALE, parseMenu} from './lib/utils';
 import {useAnalytics} from './hooks/useAnalytics';
 
+// CSS
+import colors from './styles/colors.css';
+import global from './styles/global.css';
+import footer from './styles/footer/footer.css';
+import footer_d from './styles/footer/footer_desktop.css';
+import footer_m from './styles/footer/footer_mobile.css';
+import desktop from './styles/global/desktop.css';
+import mobile from './styles/global/mobile.css';
+import tablet from './styles/global/tablet.css';
+import {links as FadeLinks} from './components/fadeCarousel/FadeCarousel';
+
 // This is important to avoid re-fetching root queries on sub-navigations
 export const shouldRevalidate: ShouldRevalidateFunction = ({
   formMethod,
@@ -58,11 +69,58 @@ export const links: LinksFunction = () => {
       rel: 'preconnect',
       href: 'https://cdn.shopify.com',
     },
+    // COLORS STYLING
+    {
+      rel: 'stylesheet',
+      href: colors,
+    },
+
+    //Footer  DEVICES STYLING
+    {
+      rel: 'stylesheet',
+      href: footer,
+    },
+    {
+      rel: 'stylesheet',
+      href: footer_m,
+      media: 'screen and (max-width: 768px)',
+    },
+    {
+      rel: 'stylesheet',
+      href: footer_d,
+      media: 'screen and (min-width: 769px)',
+    },
+
+    // DEVICES STYLING
+    {
+      rel: 'stylesheet',
+      href: desktop,
+      media: 'screen and (min-width: 1024px)',
+    },
+    {
+      rel: 'stylesheet',
+      href: mobile,
+      media: 'screen and (max-width: 768px)',
+    },
+    {
+      rel: 'stylesheet',
+      href: tablet,
+      media: 'screen and (min-width: 768px) and (max-width: 1024px)',
+    },
+    // GLOBAL STYLE
+    {
+      rel: 'stylesheet',
+      href: global,
+    },
+
+    //
     {
       rel: 'preconnect',
       href: 'https://shop.app',
     },
     {rel: 'icon', type: 'image/svg+xml', href: favicon},
+    // Carousel links
+    ...FadeLinks(),
   ];
 };
 
@@ -74,16 +132,16 @@ export const useRootLoaderData = () => {
 export async function loader({request, context}: LoaderFunctionArgs) {
   const {storefront, cart} = context;
   const layout = await getLayoutData(context);
-  const isLoggedInPromise = context.customerAccount.isLoggedIn();
+
+  const cartPromise = cart.get();
 
   const seo = seoPayload.root({shop: layout.shop, url: request.url});
 
   return defer(
     {
-      isLoggedIn: isLoggedInPromise,
       layout,
       selectedLocale: storefront.i18n,
-      cart: cart.get(),
+      cart: cartPromise,
       analytics: {
         shopifySalesChannel: ShopifySalesChannel.hydrogen,
         shopId: layout.shop.id,

@@ -21,6 +21,48 @@ export type OrderCardFragment = Pick<
   };
 };
 
+export type OffersQueryVariables = StorefrontAPI.Exact<{[key: string]: never}>;
+
+export type OffersQuery = {
+  metaobject?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Metaobject, 'id'> & {
+      fields: Array<Pick<StorefrontAPI.MetaobjectField, 'value'>>;
+    }
+  >;
+};
+
+export type EarringsQueryVariables = StorefrontAPI.Exact<{
+  [key: string]: never;
+}>;
+
+export type EarringsQuery = {
+  collections: {
+    nodes: Array<
+      Pick<StorefrontAPI.Collection, 'id' | 'title' | 'handle'> & {
+        image?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Image, 'altText' | 'width' | 'height' | 'url'>
+        >;
+      }
+    >;
+  };
+};
+
+export type NecklaceQueryVariables = StorefrontAPI.Exact<{
+  [key: string]: never;
+}>;
+
+export type NecklaceQuery = {
+  collections: {
+    nodes: Array<
+      Pick<StorefrontAPI.Collection, 'id' | 'title' | 'handle'> & {
+        image?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Image, 'altText' | 'width' | 'height' | 'url'>
+        >;
+      }
+    >;
+  };
+};
+
 type Media_ExternalVideo_Fragment = {__typename: 'ExternalVideo'} & Pick<
   StorefrontAPI.ExternalVideo,
   'id' | 'embedUrl' | 'host' | 'mediaContentType' | 'alt'
@@ -1183,6 +1225,14 @@ export type SitemapsQuery = {
 };
 
 interface GeneratedQueryTypes {
+  '#graphql\nquery Offers {\n  metaobject(\n    handle: {handle: "offers-announcement-bar-u7shqoz9", type: "offers_announcement_bar"}\n  ) {\n    id\n    fields {\n      value\n    }\n  }\n}': {
+    return: OffersQuery;
+    variables: OffersQueryVariables;
+  };
+  '#graphql\nquery Earrings {\n  collections(\n    sortKey: RELEVANCE\n    query: "bali OR studs OR jhumkas OR earrings"\n    first: 10\n  ) {\n    nodes {\n      id\n      title\n      handle\n      image {\n        altText\n        width\n        height\n        url\n      }\n    }\n  }\n}\nquery Necklace {\n  collections(\n    sortKey: RELEVANCE\n    query: "necklace OR choker OR kundan"\n    first: 10\n  ) {\n    nodes {\n      id\n      title\n      handle\n      image {\n        altText\n        width\n        height\n        url\n      }\n    }\n  }\n}\n\n': {
+    return: never;
+    variables: EarringsQueryVariables & NecklaceQueryVariables;
+  };
   '#graphql\n  query layout(\n    $language: LanguageCode\n    $headerMenuHandle: String!\n    $footerMenuHandle: String!\n  ) @inContext(language: $language) {\n    shop {\n      ...Shop\n    }\n    headerMenu: menu(handle: $headerMenuHandle) {\n      ...Menu\n    }\n    footerMenu: menu(handle: $footerMenuHandle) {\n      ...Menu\n    }\n  }\n  fragment Shop on Shop {\n    id\n    name\n    description\n    primaryDomain {\n      url\n    }\n    brand {\n      logo {\n        image {\n          url\n        }\n      }\n    }\n  }\n  fragment MenuItem on MenuItem {\n    id\n    resourceId\n    tags\n    title\n    type\n    url\n  }\n  fragment ChildMenuItem on MenuItem {\n    ...MenuItem\n  }\n  fragment ParentMenuItem on MenuItem {\n    ...MenuItem\n    items {\n      ...ChildMenuItem\n    }\n  }\n  fragment Menu on Menu {\n    id\n    items {\n      ...ParentMenuItem\n    }\n  }\n': {
     return: LayoutQuery;
     variables: LayoutQueryVariables;
@@ -1203,7 +1253,7 @@ interface GeneratedQueryTypes {
     return: HomepageFeaturedProductsQuery;
     variables: HomepageFeaturedProductsQueryVariables;
   };
-  '#graphql\n  query homepageFeaturedCollections($country: CountryCode, $language: LanguageCode)\n  @inContext(country: $country, language: $language) {\n    collections(\n      first: 4,\n      sortKey: UPDATED_AT\n    ) {\n      nodes {\n        id\n        title\n        handle\n        image {\n          altText\n          width\n          height\n          url\n        }\n      }\n    }\n  }\n': {
+  '#graphql\n  query homepageFeaturedCollections($country: CountryCode, $language: LanguageCode)\n  @inContext(country: $country, language: $language) {\n    collections(\n      first: 10,\n      sortKey: UPDATED_AT\n    ) {\n      nodes {\n        id\n        title\n        handle\n        image {\n          altText\n          width\n          height\n          url\n        }\n      }\n    }\n  }\n': {
     return: HomepageFeaturedCollectionsQuery;
     variables: HomepageFeaturedCollectionsQueryVariables;
   };

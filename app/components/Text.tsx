@@ -89,6 +89,7 @@ export function Heading({
     missingClass(className, 'max-w-') && widths[width],
     missingClass(className, 'font-') && sizes[size],
     className,
+    //
   );
 
   return (
@@ -114,7 +115,7 @@ export function Section({
   divider?: 'none' | 'top' | 'bottom' | 'both';
   display?: 'grid' | 'flex';
   heading?: string;
-  padding?: 'x' | 'y' | 'swimlane' | 'all';
+  padding?: 'x' | 'y' | 'swimlane' | 'all' | 'none';
   [key: string]: any;
 }) {
   const paddings = {
@@ -122,6 +123,7 @@ export function Section({
     y: 'py-6 md:py-8 lg:py-12',
     swimlane: 'pt-4 md:pt-8 lg:pt-12 md:pb-4 lg:pb-8',
     all: 'p-6 md:p-8 lg:p-12',
+    none: '',
   };
 
   const dividers = {
@@ -171,6 +173,9 @@ export function PageHeader({
 }) {
   const variants: Record<string, string> = {
     default: 'grid w-full gap-8 p-6 py-8 md:p-8 lg:p-12 justify-items-start',
+    // tan
+    collection_text:
+      'grid w-full gap-8 p-6 py-8 md:p-8 lg:p-12 justify-items-start text-blue',
     blogPost:
       'grid md:text-center w-full gap-4 p-6 py-8 md:p-8 lg:p-12 md:justify-items-center',
     allCollections:
@@ -180,9 +185,14 @@ export function PageHeader({
   const styles = clsx(variants[variant], className);
 
   return (
-    <header {...props} className={styles}>
+    <header {...props} className={styles + ' z-0'}>
       {heading && (
-        <Heading as="h1" width="narrow" size="heading" className="inline-block">
+        <Heading
+          as="h1"
+          width="narrow"
+          size="heading"
+          className="w-full page_title"
+        >
           {heading}
         </Heading>
       )}

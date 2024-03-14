@@ -1,7 +1,7 @@
 import {useRef, Suspense} from 'react';
 import {Disclosure, Listbox} from '@headlessui/react';
 import {defer, redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {useLoaderData, Await, useNavigate} from '@remix-run/react';
+import {useLoaderData, Await} from '@remix-run/react';
 import type {ShopifyAnalyticsProduct} from '@shopify/hydrogen';
 import {
   AnalyticsPageType,
@@ -36,6 +36,9 @@ import {seoPayload} from '~/lib/seo.server';
 import type {Storefront} from '~/lib/type';
 import {routeHeaders} from '~/data/cache';
 import {MEDIA_FRAGMENT, PRODUCT_CARD_FRAGMENT} from '~/data/fragments';
+import {ProductItem} from '~/components/ProductItem';
+
+import HorizontalCarousel from '~/components/hozizontalCarousel/HorizontalCarousel';
 
 export const headers = routeHeaders;
 
@@ -139,17 +142,17 @@ export default function Product() {
   const {shippingPolicy, refundPolicy} = shop;
 
   return (
-    <>
+    <div className="taupe-dark">
       <Section className="px-0 md:px-8 lg:px-12">
         <div className="grid items-start md:gap-6 lg:gap-20 md:grid-cols-2 lg:grid-cols-3">
           <ProductGallery
             media={media.nodes}
             className="w-full lg:col-span-2"
           />
-          <div className="sticky md:-mb-nav md:top-nav md:-translate-y-nav md:h-screen md:pt-nav hiddenScroll md:overflow-y-scroll">
+          <div className="sticky md:-mb-nav md:top-nav md:-translate-y-nav md:pt-nav hiddenScroll md:overflow-y-scroll flex justify-center items-center">
             <section className="flex flex-col w-full max-w-xl gap-8 p-6 md:mx-auto md:max-w-sm md:px-0">
               <div className="grid gap-2">
-                <Heading as="h1" className="whitespace-normal">
+                <Heading as="h1" className="whitespace-normal product-info">
                   {title}
                 </Heading>
                 {vendor && (
@@ -200,11 +203,21 @@ export default function Product() {
           resolve={recommended}
         >
           {(products) => (
-            <ProductSwimlane title="Related Products" products={products} />
+            // <ProductItem
+            //   product={products.nodes[0]}
+            //   key={products.nodes[0].id}
+            // />
+            <div className="relative">
+              <ProductSwimlane
+                title="Related Products"
+                products={products}
+                className={'relative'}
+              />
+            </div>
           )}
         </Await>
       </Suspense>
-    </>
+    </div>
   );
 }
 
@@ -235,8 +248,6 @@ export function ProductForm({
     quantity: 1,
   };
 
-  const navigate = useNavigate();
-
   return (
     <div className="grid gap-10">
       <div className="grid gap-4">
@@ -257,17 +268,7 @@ export function ProductForm({
                 <div className="flex flex-wrap items-baseline gap-4">
                   {option.values.length > 7 ? (
                     <div className="relative w-full">
-                      <Listbox
-                        onChange={(selectedOption) => {
-                          const value = option.values.find(
-                            (v) => v.value === selectedOption,
-                          );
-
-                          if (value) {
-                            navigate(value.to);
-                          }
-                        }}
-                      >
+                      <Listbox>
                         {({open}) => (
                           <>
                             <Listbox.Button
@@ -360,7 +361,8 @@ export function ProductForm({
                     quantity: 1,
                   },
                 ]}
-                variant="primary"
+                className="bg-[#5d8bd7] text-white rounded-md p-1"
+                // variant="primary"
                 data-test="add-to-cart"
                 analytics={{
                   products: [productAnalytics],
@@ -398,6 +400,51 @@ export function ProductForm({
             )}
           </div>
         )}
+        <div className="w-full rounded-md flex flex-col justify-center items-center bg-white/30 p-3">
+          <div className="flex flex-row justify-center items-center">
+            <div>
+              <svg
+                role="presentation"
+                fill="none"
+                focusable="false"
+                strokeWidth="1.6"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                className="icon icon-picto-percent"
+              >
+                <path
+                  d="M12 22.714c6.857 0 10.714-3.857 10.714-10.714S18.857 1.286 12 1.286 1.286 5.143 1.286 12 5.143 22.714 12 22.714Z"
+                  fill="currentColor"
+                  fillOpacity="0"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="m7.714 16.286 8.571-8.572"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M8.571 9.429a.857.857 0 1 0 0-1.715.857.857 0 0 0 0 1.715v0ZM15.428 16.286a.857.857 0 1 0 0-1.715.857.857 0 0 0 0 1.715Z"
+                  fill="currentColor"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+            <p className="w-full ml-2">Offer</p>
+          </div>
+          <div className="my-2">
+            <h5>Buy any 2 → 15% off</h5>
+          </div>
+          <div className="my-2">
+            <h5>Buy any 3 → 20% off</h5>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -430,7 +477,7 @@ function ProductDetail({
             </div>
           </Disclosure.Button>
 
-          <Disclosure.Panel className={'pb-4 pt-2 grid gap-2'}>
+          <Disclosure.Panel className={'pb-4 pt-2 grid gap-2 text-xl'}>
             <div
               className="prose dark:prose-invert"
               dangerouslySetInnerHTML={{__html: content}}

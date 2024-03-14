@@ -8,21 +8,26 @@ import {MEDIA_FRAGMENT, PRODUCT_CARD_FRAGMENT} from '~/data/fragments';
 import {getHeroPlaceholder} from '~/lib/placeholders';
 import {seoPayload} from '~/lib/seo.server';
 import {routeHeaders} from '~/data/cache';
+import FadeCarousel, {
+  links as FadeLinks,
+} from '~/components/fadeCarousel/FadeCarousel';
+
+// MOCK DATA IMPORTS
+import RatingFeed from '~/components/RatingFeed';
+import {InfiniteMarquee} from '~/components/UIAcernity/InfiniteMarquee';
+
+import {
+  TEST_RATING_DATA,
+  TEST_COLLECTIONS,
+  HOME_BANNER_DATA,
+} from '../testData/ComponentTestingData';
+
+import {links} from '~/components/HomePage';
 
 export const headers = routeHeaders;
 
 export async function loader({params, context}: LoaderFunctionArgs) {
   const {language, country} = context.storefront.i18n;
-
-  if (
-    params.locale &&
-    params.locale.toLowerCase() !== `${language}-${country}`.toLowerCase()
-  ) {
-    // If the locale URL param is defined, yet we still are on `EN-US`
-    // the the locale param must be invalid, send to the 404 page
-    throw new Response(null, {status: 404});
-  }
-
   const {shop, hero} = await context.storefront.query(HOMEPAGE_SEO_QUERY, {
     variables: {handle: 'freestyle'},
   });
@@ -93,22 +98,45 @@ export default function Homepage() {
         <Hero {...primaryHero} height="full" top loading="eager" />
       )}
 
-      {featuredProducts && (
-        <Suspense>
-          <Await resolve={featuredProducts}>
-            {({products}) => {
-              if (!products?.nodes) return <></>;
-              return (
-                <ProductSwimlane
-                  products={products}
-                  title="Featured Products"
-                  count={4}
+      <div className="home">
+        <FadeCarousel dots={false} autoplay={true}>
+          {HOME_BANNER_DATA.map((item, index) => (
+            <div key={index + ' timpass no sense id'} className="m-0 p-0">
+              <div
+                className={
+                  'flex justify-center items-center m-0  ' + item.class
+                }
+              >
+                <div></div>
+                <img
+                  src={item.image.url}
+                  key={item.image.id}
+                  className="rounded-md m-0 banner_image"
                 />
-              );
-            }}
-          </Await>
-        </Suspense>
-      )}
+              </div>
+            </div>
+          ))}
+        </FadeCarousel>
+      </div>
+      <div className="gap_filler"></div>
+      <div className="off_white_white">
+        {featuredProducts && (
+          <Suspense>
+            <Await resolve={featuredProducts}>
+              {({products}) => {
+                if (!products?.nodes) return <></>;
+                return (
+                  <ProductSwimlane
+                    products={products}
+                    title="Featured Products"
+                    count={4}
+                  />
+                );
+              }}
+            </Await>
+          </Suspense>
+        )}
+      </div>
 
       {secondaryHero && (
         <Suspense fallback={<Hero {...skeletons[1]} />}>
@@ -121,7 +149,109 @@ export default function Homepage() {
         </Suspense>
       )}
 
-      {featuredCollections && (
+      <div className="trans_taupe pb-20">
+        <ReviewsNRating
+          count={[1407, 23123]}
+          label={['reviews', 'happy customers']}
+        />
+        <div className="flex justify-center items-center">
+          <InfiniteMarquee
+            items={TEST_RATING_DATA}
+            direction="left"
+            speed="slow"
+          />
+        </div>
+        {/* <FadeCarousel dots={true} autoplay={false}>
+          {TEST_RATING_DATA.map((item) => (
+            <div className="w-fit">
+              <RatingFeed
+                RatingObject={item}
+                rateSize={20}
+                fontStyle={{color: 'white', fontSize: '1.5em'}}
+              />
+            </div>
+          ))}
+        </FadeCarousel> */}
+      </div>
+      <div className="taupe-dark p-3">
+        <p className="text-2xl mb-2">Shop by collections</p>
+
+        {/* EARRINGS COLLECTION  */}
+        <div>
+          <p className="text-3xl mb-2">Earrings</p>
+          {featuredProducts && (
+            <Suspense>
+              <Await resolve={featuredProducts}>
+                {/* {({products}) => {
+              if (!products?.nodes) return <></>;
+              // const x =
+            }} */}
+                {({products}) => {
+                  if (!products?.nodes) return <></>;
+                  return (
+                    <ProductSwimlane
+                      products={products}
+                      title="" // no need of collection name as it is mentioned above
+                      count={4}
+                    />
+                  );
+                }}
+              </Await>
+            </Suspense>
+          )}
+        </div>
+
+        {/* Immitation Jwellery COLLECTION  */}
+        <div>
+          <p className="text-3xl mb-2">Immitation Jwellery</p>
+          {featuredProducts && (
+            <Suspense>
+              <Await resolve={featuredProducts}>
+                {/* {({products}) => {
+              if (!products?.nodes) return <></>;
+              // const x =
+            }} */}
+                {({products}) => {
+                  if (!products?.nodes) return <></>;
+                  return (
+                    <ProductSwimlane
+                      products={products}
+                      title="" // no need of collection name as it is mentioned above
+                      count={4}
+                    />
+                  );
+                }}
+              </Await>
+            </Suspense>
+          )}
+        </div>
+
+        {/* Bangales COLLECTION  */}
+        <div>
+          <p className="text-3xl mb-2">Bangales</p>
+          {featuredProducts && (
+            <Suspense>
+              <Await resolve={featuredProducts}>
+                {/* {({products}) => {
+              if (!products?.nodes) return <></>;
+              // const x =
+            }} */}
+                {({products}) => {
+                  if (!products?.nodes) return <></>;
+                  return (
+                    <ProductSwimlane
+                      products={products}
+                      title="" // no need of collection name as it is mentioned above
+                      count={4}
+                    />
+                  );
+                }}
+              </Await>
+            </Suspense>
+          )}
+        </div>
+      </div>
+      {/* {featuredCollections && (
         <Suspense>
           <Await resolve={featuredCollections}>
             {({collections}) => {
@@ -135,8 +265,7 @@ export default function Homepage() {
             }}
           </Await>
         </Suspense>
-      )}
-
+      )} */}
       {tertiaryHero && (
         <Suspense fallback={<Hero {...skeletons[2]} />}>
           <Await resolve={tertiaryHero}>
@@ -150,6 +279,36 @@ export default function Homepage() {
     </>
   );
 }
+
+// ADDITION COMPONENT
+
+function ReviewsNRating({
+  count,
+  label,
+}: {
+  count: number[];
+  label: string[];
+}): React.JSX.Element {
+  return (
+    <div className="text-center flex row_to_col justify-center items-center text-transparent bg-clip-text bg-gradient-to-b from-indigo-700 to-indigo-950 mb-15">
+      <div className="flex flex-col justify-center items-center mx-20 my-10">
+        <p className="text-5xl">{count[0]}</p>
+        <p className="text-xl">{label[0]} </p>
+      </div>
+      <div
+        title=""
+        className="flex flex-col justify-center items-center mx-20 my-10"
+      >
+        <p className="text-5xl">{count[1]}</p>
+        <p className="text-xl">{label[1]}</p>
+      </div>
+    </div>
+  );
+}
+
+// export function links(){
+//   return [...FadeLinks(),...HomeLinks()];
+// }
 
 const COLLECTION_CONTENT_FRAGMENT = `#graphql
   fragment CollectionContent on Collection {
@@ -222,7 +381,7 @@ export const FEATURED_COLLECTIONS_QUERY = `#graphql
   query homepageFeaturedCollections($country: CountryCode, $language: LanguageCode)
   @inContext(country: $country, language: $language) {
     collections(
-      first: 4,
+      first: 10,
       sortKey: UPDATED_AT
     ) {
       nodes {

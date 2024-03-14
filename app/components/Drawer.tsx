@@ -21,15 +21,29 @@ export function Drawer({
   heading?: string;
   open: boolean;
   onClose: () => void;
-  openFrom: 'right' | 'left';
+  openFrom: 'right' | 'left' | 'bottom' | 'top';
   children: React.ReactNode;
 }) {
+  // STATES ADDED TO HANDLE DIFFERENT DIRECTIONS
+  const [animationDirection, setAnimationDirection] = useState(
+    openFrom === 'bottom' || openFrom === 'top' ? 'y' : 'x',
+  );
+
+  const handleOpenFromChange = () => {
+    setAnimationDirection(
+      openFrom === 'bottom' || openFrom === 'top' ? 'y' : 'x',
+    );
+  };
+
   const offScreen = {
     right: 'translate-x-full',
     left: '-translate-x-full',
+    bottom: 'translate-y-full',
+    top: '-translate-y-full',
   };
 
   return (
+    // https://headlessui.com/react/transition
     <Transition appear show={open} as={Fragment}>
       <Dialog as="div" className="relative z-50" onClose={onClose}>
         <Transition.Child
@@ -44,11 +58,17 @@ export function Drawer({
           <div className="fixed inset-0 bg-black bg-opacity-25" />
         </Transition.Child>
 
-        <div className="fixed inset-0">
+        <div className="fixed inset-0 ">
           <div className="absolute inset-0 overflow-hidden">
             <div
-              className={`fixed inset-y-0 flex max-w-full ${
-                openFrom === 'right' ? 'right-0' : ''
+              className={`fixed flex max-w-full ${
+                openFrom === 'right'
+                  ? 'right-0 inset-y-0'
+                  : openFrom === 'left'
+                  ? 'left-0 inset-y-0'
+                  : openFrom === 'bottom'
+                  ? 'inset-x-0 bottom-0'
+                  : 'inset-x-0 top-0'
               }`}
             >
               <Transition.Child
@@ -60,7 +80,16 @@ export function Drawer({
                 leaveFrom="translate-x-0"
                 leaveTo={offScreen[openFrom]}
               >
-                <Dialog.Panel className="w-screen max-w-lg text-left align-middle transition-all transform shadow-xl h-screen-dynamic bg-contrast">
+                {/* from rounded md it's tanay's css */}
+                <Dialog.Panel
+                  className={`${
+                    openFrom === 'bottom' || openFrom === 'top'
+                      ? 'w-full'
+                      : 'w-fit'
+                  } text-left align-middle transition-all transform shadow-xl
+                  ${openFrom === 'bottom' ? 'h-fit' : 'h-screen-dynamic'}
+                rounded-md backdrop-blur-md bg-white/30 flex flex-col justify-start items-center p-5`}
+                >
                   <header
                     className={`sticky top-0 flex items-center px-6 h-nav sm:px-8 md:px-12 ${
                       heading ? 'justify-between' : 'justify-end'

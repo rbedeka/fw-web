@@ -16,10 +16,10 @@ export function FeaturedCollections({
   const haveCollections = collections?.nodes?.length > 0;
   if (!haveCollections) return null;
 
-  const collectionsWithImage = collections.nodes.filter((item) => item.image);
+  const collectionsWithImage = collections.nodes.filter((item) => item);
 
   return (
-    <Section {...props} heading={title}>
+    <Section {...props} heading={title} className="trans_taupe ">
       <Grid items={collectionsWithImage.length}>
         {collectionsWithImage.map((collection) => {
           return (

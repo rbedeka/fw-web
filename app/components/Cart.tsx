@@ -454,13 +454,18 @@ export function CartEmpty({
 
   return (
     <div ref={scrollRef} className={container[layout]} hidden={hidden}>
-      <section className="grid gap-6">
-        <Text format>
+      <section className="p-20 flex flex-col items-center justify-center empty_cart w-100">
+        <Text format className="font-light text-center">
           Looks like you haven&rsquo;t added anything yet, let&rsquo;s get you
           started!
         </Text>
-        <div>
-          <Button onClick={onClose}>Continue shopping</Button>
+        <div className="mt-2">
+          <Button
+            onClick={onClose}
+            className="bg-[#5d8bd7] text-white px-5 py-2 rounded-md"
+          >
+            Continue shopping
+          </Button>
         </div>
       </section>
       <section className="grid gap-8 pt-16">
